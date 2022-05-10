@@ -11,6 +11,7 @@ export default class MazeGameboard extends Gameboard {
   #gameboardDOM;
 
   #gameboardWorking = false;
+  #mouseDown = false;
 
   #gameButtons = ["play", "drill", "mouse", "cheese", "reset"];
   #tilesArray = [];
@@ -37,8 +38,6 @@ export default class MazeGameboard extends Gameboard {
         );
       }
     }
-
-    // this.generateMaze(1);
   }
 
   get buttons() {
@@ -63,10 +62,10 @@ export default class MazeGameboard extends Gameboard {
       tile.grabTile();
     });
 
-    this.generateMaze(1);
+    this.#generateMaze(1);
   }
 
-  generateMaze(speed) {
+  #generateMaze(speed) {
     // send gameboard is working
 
     this.#tilesArray.forEach((tile) => {
@@ -83,8 +82,6 @@ export default class MazeGameboard extends Gameboard {
         remainingTiles.push(id);
       }
     }
-
-    
 
     const stackTiles = [remainingTiles.shift()];
 
@@ -148,9 +145,6 @@ export default class MazeGameboard extends Gameboard {
   }
 
   #revealPath(id) {
-    revealStraight();
-    revealDiagonal();
-
     const revealStraight = () => {
       const moveDirections = [+1, -1, +this.#colsCount, -this.#colsCount];
 
@@ -161,7 +155,7 @@ export default class MazeGameboard extends Gameboard {
           this.#tilesArray[id + 2 * dir].reveal("part");
         }
 
-        if (this.#tilesArray[id + dir].cheese()) {
+        if (this.#tilesArray[id + dir].cheese) {
           console.log("you found cheese");
 
           //   here goes win process
@@ -183,6 +177,9 @@ export default class MazeGameboard extends Gameboard {
         this.#tilesArray[id + dir].reveal("part");
       });
     };
+
+    revealStraight();
+    revealDiagonal();
   }
 
   #placeCheeses(num) {
@@ -211,12 +208,93 @@ export default class MazeGameboard extends Gameboard {
     }, 500);
   }
 
-  buttonClicked(button, value) {
-    switch (button) {
-    }
+  #mouse() {
+    let mouseTileId = this.#colsCount + 1;
+
+    this.#tilesArray[mouseTileId].reveal("mouse");
+    this.#revealPath(mouseTileId);
+
+    const eventMouseDown = () => {
+      this.#gameboardDOM.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        if (e.target.classList.contains("tile-path-mouse")) {
+          this.#mouseDown = true;
+        }
+      });
+
+      this.#gameboardDOM.addEventListener("dragstart", (e) => {
+        e.preventDefault();
+      });
+    };
+
+    const eventMouseUp = () => {
+      window.addEventListener("mouseup", (e) => {
+        e.preventDefault();
+        this.#mouseDown = false;
+      });
+    };
+
+    const eventMouseOver = () => {
+      this.#gameboardDOM.addEventListener("mouseover", (e) => {
+        e.preventDefault();
+
+        const possibleMoves = [
+          mouseTileId + 1,
+          mouseTileId - 1,
+          mouseTileId + this.#colsCount,
+          mouseTileId - this.#colsCount,
+        ];
+
+        if (
+          this.#mouseDown &&
+          this.#tilesArray[e.target.dataset.id].path &&
+          possibleMoves.includes(parseInt(e.target.dataset.id))
+        ) {
+          mouseTileId = parseInt(e.target.dataset.id);
+          this.#tilesArray[mouseTileId].reveal("mouse");
+          this.#revealPath(mouseTileId);
+        }
+      });
+    };
+
+    const eventMouseClick = () => {
+      this.#gameboardDOM.addEventListener("click", (e) => {
+        e.preventDefault();
+        
+
+        const possibleMoves = [
+          mouseTileId + 1,
+          mouseTileId - 1,
+          mouseTileId + this.#colsCount,
+          mouseTileId - this.#colsCount,
+        ];
+
+        if (
+          this.#tilesArray[e.target.dataset.id].path &&
+          possibleMoves.includes(parseInt(e.target.dataset.id))
+        ) {
+          mouseTileId = parseInt(e.target.dataset.id);
+          this.#tilesArray[mouseTileId].reveal("mouse");
+          this.#revealPath(mouseTileId);
+        }
+      });
+    };
+
+    eventMouseDown();
+    eventMouseUp();
+    eventMouseOver();
+    eventMouseClick();
   }
 
-  mouse(){
-      this.#gameboardDOM.addEventListener('click',)
+  buttonClicked(id) {
+    switch (id) {
+      case 1:
+        this.#generateMaze(1);
+        break;
+      case 2:
+        this.#mouse();
+
+        break;
+    }
   }
 }

@@ -60,10 +60,12 @@ background-position: center;
 
 .tile-path-true{
 /* background-image: url(./images/paving-white.png); */
+background-color: white;
 }
 
 .tile-path-false{
     background-image: url(./images/wall.png);
+    background-color: white;
 }
 
 .tile-path-drill-head{
@@ -78,4 +80,9 @@ background-position: center;
 
 .tile-path-cheese{
     
+}
+
+.tile-path-mouse{
+   background-color: grey; 
+   opacity: 100%;
 }

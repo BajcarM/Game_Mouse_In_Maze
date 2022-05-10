@@ -131,7 +131,7 @@ export default class ControlsPanel {
         
       });
 
-      console.log(this.#buttonsGame);
+    
     };
 
     loadGameboard();
