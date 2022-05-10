@@ -45,6 +45,10 @@ export default class Gameboard {
       `;
   }
 
+  get buttons() {
+    return this.#gameButtons;
+  }
+
   grabGameboard() {
     this.#gameboardDOM = document.querySelector(`.${this.#name}-gameboard`);
     this.#tilesArray.forEach((tile) => {

@@ -11,7 +11,7 @@ class MazeGameboard extends Gameboard {
 
   #gameboardWorking = false;
 
-  #gameButtons = [];
+  #gameButtons = ["play", "drill", "mouse", "cheese", "reset"];
   #tilesArray = [];
 
   constructor(name, controlsPanel, width, rowsCount, colsCount) {
@@ -237,5 +237,10 @@ class MazeGameboard extends Gameboard {
         // send gameboard not working
       }
     }, 500);
+  }
+
+  buttonClicked(button, value) {
+    switch (button) {
+    }
   }
 }
