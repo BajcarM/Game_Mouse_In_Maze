@@ -26,16 +26,56 @@ body {
   display: grid;
   place-items: center;
   grid-row: 1;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .controls-game {
   display: grid;
   place-items: center;
   grid-row: 2;
+  grid-template-columns: repeat(5,1fr);
 }
 
-.container-game {
+.container-gameboard {
   display: grid;
   place-items: center;
   grid-row: 2;
+}
+
+.gameboard{
+    display: grid;
+    place-items: center;
+}
+
+.maze-gameboard{
+    grid-template-columns: repeat(9, 1fr);
+}
+
+.tile{
+    height: 100px;
+    width: 100px;
+background-size: contain;
+background-position: center;
+}
+
+.tile-path-true{
+/* background-image: url(./images/paving-white.png); */
+}
+
+.tile-path-false{
+    background-image: url(./images/wall.png);
+}
+
+.tile-path-drill-head{
+    background-image: none;
+    background-color: blueviolet;
+}
+
+.tile-path-drill-tail{
+    background-image: none;
+    background-color: rgb(101, 176, 246);
+}
+
+.tile-path-cheese{
+    
 }

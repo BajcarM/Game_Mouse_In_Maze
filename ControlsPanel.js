@@ -11,7 +11,7 @@ export default class ControlsPanel {
 
   #gameSelected;
 
-  #mainButtonsLabels = ["choose", "confirm"];
+  #mainButtonsLabels = ["select"];
 
   #buttonsMain = [];
   #buttonsGame = [];
@@ -28,7 +28,18 @@ export default class ControlsPanel {
 
     this.#gameSectionDOM.innerHTML = `
         <div class="container-controls">
-            <div class="controls-main">
+            <div class="controls-main">                
+                <select name="games" id="game-select">
+                    <option value="">--Choose a game--</option>                    
+                    ${this.#gamesAvailable
+                      .map((game, index) => {
+                        return `
+                            <option value="${index}">
+                            ${game.label}
+                            </option>`;
+                      })
+                      .join("")} 
+                </select>
                 ${this.#buttonsMain
                   .map((button) => {
                     return button.buttonHTML;
@@ -54,6 +65,76 @@ export default class ControlsPanel {
   }
 
   buttonClicked(id) {
-    console.log("button clicked " + id);
+    switch (id) {
+      case 0:
+        const gameIndex = document.getElementById("game-select").value;
+        if (gameIndex) {
+          this.loadGame(this.#gamesAvailable[gameIndex]);
+        }
+        break;
+    }
+  }
+
+  loadGame(game) {
+    let height, width, rowsCount, colsCount;
+
+    // Media queries a zapsat velikost a orientaci
+
+    switch (game.name) {
+      case "maze":
+        height = 500;
+        width = 900;
+        rowsCount = 5;
+        colsCount = 9;
+
+        break;
+
+      default:
+        break;
+    }
+
+    const loadGameboard = () => {
+      this.#gameSelected = new game.gameboard(
+        game.name,
+        this,
+        
+        width,
+        rowsCount,
+        colsCount
+      );
+
+     
+
+      this.#containerGameboardDOM.innerHTML = this.#gameSelected.gameboardHTML;
+      this.#gameSelected.grabGameboard();
+      
+    };
+
+    const loadButtons = () => {
+      this.#gameSelected.buttons.forEach((label, index) => {
+        this.#buttonsGame.push(
+          new Button(index, label, "game", this.#gameSelected)
+        );
+        
+      });
+
+      this.#gameControlsDOM.innerHTML = `
+                  ${this.#buttonsGame
+                    .map((button) => {
+                      return button.buttonHTML;
+                    })
+                    .join("")}`;
+      this.#buttonsGame.forEach((button) => {
+        button.grabButton();
+        button.listenForClick();
+
+        
+      });
+
+      console.log(this.#buttonsGame);
+    };
+
+    loadGameboard();
+    loadButtons();
   }
 }

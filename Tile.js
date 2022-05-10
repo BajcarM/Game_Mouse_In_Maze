@@ -5,9 +5,11 @@ export default class Tile {
   #tileDOM;
   #parentGameboard;
 
-  constructor(id, parentGameboard) {
+  constructor(id, parentGameboard, height, width) {
     this.#id = id;
     this.#parentGameboard = parentGameboard;
+    this.#height = height;
+    this.#width = width;
   }
 
   get id() {
@@ -15,7 +17,7 @@ export default class Tile {
   }
 
   get tileHTML() {
-    return `<div class="tile" data-id="${this.#id}">`;
+    return `<div class="tile" data-id="${this.#id}"></div>`;
   }
 
   set height(height) {

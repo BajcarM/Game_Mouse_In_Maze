@@ -1,13 +1,14 @@
 import Gameboard from "./Gameboard.js";
 import MazeTile from "./MazeTile.js";
+import Tile from "./Tile.js";
 
 export default class MazeGameboard extends Gameboard {
   #name;
   #controlsPanel;
-  #gameboardDOM;
   #width;
   #rowsCount;
   #colsCount;
+  #gameboardDOM;
 
   #gameboardWorking = false;
 
@@ -15,15 +16,21 @@ export default class MazeGameboard extends Gameboard {
   #tilesArray = [];
 
   constructor(name, controlsPanel, width, rowsCount, colsCount) {
-    super(name, controlsPanel, width, rowsCount, colsCount);
+    super();
+    this.#name = name;
+    this.#controlsPanel = controlsPanel;
+    this.#width = width;
+    this.#rowsCount = rowsCount;
+    this.#colsCount = colsCount;
 
     for (let row = 0; row < this.#rowsCount; row++) {
       for (let col = 0; col < this.#colsCount; col++) {
-        const id = row * this.colsCount + col;
+        const id = row * this.#colsCount + col;
 
         this.#tilesArray.push(
           new MazeTile(
             id,
+            this,
             this.#width / this.#colsCount,
             this.#width / this.#colsCount
           )
@@ -31,48 +38,74 @@ export default class MazeGameboard extends Gameboard {
       }
     }
 
+    // this.generateMaze(1);
+  }
+
+  get buttons() {
+    return this.#gameButtons;
+  }
+
+  get gameboardHTML() {
+    return `
+      <div class="gameboard ${this.#name}-gameboard">
+        ${this.#tilesArray
+          .map((tile) => {
+            return tile.tileHTML;
+          })
+          .join("")}
+      </div>
+      `;
+  }
+
+  grabGameboard() {
+    this.#gameboardDOM = document.querySelector(`.${this.#name}-gameboard`);
+    this.#tilesArray.forEach((tile) => {
+      tile.grabTile();
+    });
+
     this.generateMaze(1);
   }
 
   generateMaze(speed) {
     // send gameboard is working
 
-    this.tilesArray.forEach((tile) => {
-      tile.path(false);
+    this.#tilesArray.forEach((tile) => {
+      tile.path = false;
       tile.reveal("full");
     });
 
-    let remainingTiles = findRemainingTiles();
+    let remainingTiles = [];
+
+    for (let row = 1; row < this.#rowsCount; row += 2) {
+      for (let col = 1; col < this.#colsCount; col += 2) {
+        const id = row * this.#colsCount + col;
+
+        remainingTiles.push(id);
+      }
+    }
+
+    
 
     const stackTiles = [remainingTiles.shift()];
 
     const drill = setInterval(() => {
       const currentTile = stackTiles.pop();
 
-      const possibleMoves = findPossibleMoves();
+      this.#tilesArray[currentTile].path = true;
+      this.#tilesArray[currentTile].reveal("drill-head");
 
-      possibleMoves.length > 0 ? drillNext() : drillBack();
+      const possibleMoves = remainingTiles.reduce((acc, tile) => {
+        if (
+          tile === currentTile + 2 ||
+          tile === currentTile - 2 ||
+          tile === currentTile + 2 * this.#colsCount ||
+          tile === currentTile - 2 * this.#colsCount
+        ) {
+          acc.push(tile);
+        }
 
-      if (stackTiles.length === 0) {
-        clearInterval(drill);
-
-        // Send message gameboard not working
-      }
-
-      const findPossibleMoves = () => {
-        remainingTiles.reduce((acc, tile) => {
-          if (
-            tile === currentTile + 2 ||
-            tile === currentTile - 2 ||
-            tile === currentTile + 2 * this.colsCount ||
-            tile === currentTile - 2 * this.colsCount
-          ) {
-            acc.push(tile);
-          }
-
-          return acc;
-        }, []);
-      };
+        return acc;
+      }, []);
 
       const drillNext = () => {
         const randomMove = Math.floor(Math.random() * possibleMoves.length);
@@ -86,96 +119,35 @@ export default class MazeGameboard extends Gameboard {
           return tile !== nextMove;
         });
 
-        this.tilesArray[nextMove].path(true);
-        this.tilesArray[nextMove].reveal("drill-head");
-        this.tilesArray[wallBetween].path(true);
-        this.tilesArray[wallBetween].reveal("drill-tail");
-        this.tilesArray[currentTile].path(true);
-        this.tilesArray[currentTile].reveal("drill-tail");
+        this.#tilesArray[nextMove].path = true;
+        this.#tilesArray[nextMove].reveal("drill-head");
+        this.#tilesArray[wallBetween].path = true;
+        this.#tilesArray[wallBetween].reveal("drill-tail");
+        this.#tilesArray[currentTile].path = true;
+        this.#tilesArray[currentTile].reveal("drill-tail");
       };
 
       const drillBack = () => {
         const wallBetween =
           (currentTile + stackTiles[stackTiles.length - 1]) / 2;
 
-        this.tilesArray[currentTile].reveal("full");
+        this.#tilesArray[currentTile].reveal("full");
         if (wallBetween) {
-          this.tilesArray[wallBetween].reveal("full");
+          this.#tilesArray[wallBetween].reveal("full");
         }
       };
 
-      //   this.tilesArray[currentTile].path(true);
-      //   this.tilesArray[currentTile].reveal('drill-head');
+      possibleMoves.length > 0 ? drillNext() : drillBack();
 
-      //   const possibleMoves = remainingTiles.reduce((acc, tile) => {
-      //     if (
-      //       tile === currentTile + 2 ||
-      //       tile === currentTile - 2 ||
-      //       tile === currentTile + 2 * this.colsCount ||
-      //       tile === currentTile - 2 * this.colsCount
-      //     ) {
-      //       acc.push(tile);
-      //     }
+      if (stackTiles.length === 0) {
+        clearInterval(drill);
 
-      //     return acc;
-      //   }, []);
-
-      //   if (possibleMoves.length > 0) {
-
-      // const randomMove = Math.floor(Math.random() * possibleMoves.length);
-      // const nextMove = possibleMoves[randomMove];
-      // const wallBetween = (currentTile + possibleMoves[randomMove]) / 2;
-
-      // stackTiles.push(currentTile);
-      // stackTiles.push(nextMove);
-
-      // remainingTiles = remainingTiles.filter((tile) => {
-      //   return tile !== nextMove;
-      // });
-
-      // this.tilesArray[nextMove].path(true);
-      // this.tilesArray[nextMove].reveal("drill-head");
-      // this.tilesArray[wallBetween].path(true);
-      // this.tilesArray[wallBetween].reveal("drill-tail");
-      // this.tilesArray[currentTile].path(true);
-      // this.tilesArray[currentTile].reveal("drill-tail");
-      // return
-      //   }
-      //     const wallBetween =
-      //       (currentTile + stackTiles[stackTiles.length - 1]) / 2;
-
-      //     this.tilesArray[currentTile].reveal("full");
-      //     if (wallBetween) {
-      //       this.tilesArray[wallBetween].reveal("full");
-      //     }
-    }, speed * 100);
-
-    const findRemainingTiles = () => {
-      const acc = [];
-
-      for (let row = 1; row < this.rowsCount; row += 2) {
-        for (let col = 1; col < this.colsCount; col += 2) {
-          const id = row * this.colsCount + col;
-
-          acc.push(id);
-        }
+        // Send message gameboard not working
       }
-      return acc;
-    };
-
-    // this.tilesArray[this.colsCount].path(true);
-    // this.tilesArray[this.colsCount].reveal('full')
-
-    // for (let row = 1; row < this.rowsCount; row += 2) {
-    //   for (let col = 1; col < this.colsCount; col += 2) {
-    //     const id = row * this.colsCount + col;
-
-    //     remainingTiles.push(id);
-    //   }
-    // }
+    }, speed * 100);
   }
 
-  revealPath(id) {
+  #revealPath(id) {
     revealStraight();
     revealDiagonal();
 
@@ -185,7 +157,7 @@ export default class MazeGameboard extends Gameboard {
       moveDirections.forEach((dir) => {
         this.#tilesArray[id + dir].reveal("full");
 
-        if (this.#tilesArray[id + dir].path()) {
+        if (this.#tilesArray[id + dir].path) {
           this.#tilesArray[id + 2 * dir].reveal("part");
         }
 
@@ -213,11 +185,11 @@ export default class MazeGameboard extends Gameboard {
     };
   }
 
-  placeCheeses(num) {
+  #placeCheeses(num) {
     let i = 0;
     const placeCheese = setInterval(() => {
       const emptyPathsIds = this.#tilesArray.filter((tile) => {
-        if (tile.path() && !tile.cheese()) {
+        if (tile.path && !tile.cheese()) {
           return tile.id();
         }
       });
@@ -242,5 +214,9 @@ export default class MazeGameboard extends Gameboard {
   buttonClicked(button, value) {
     switch (button) {
     }
+  }
+
+  mouse(){
+      this.#gameboardDOM.addEventListener('click',)
   }
 }

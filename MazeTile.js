@@ -1,15 +1,21 @@
 import Tile from "./Tile.js";
 
 export default class MazeTile extends Tile {
-  #height;
-  #width;
+  #id;
+  //   #parentGameboard;
+  //   #height;
+  //   #width;
   #tileDOM;
 
   #path;
   #cheese;
 
-  constructor(id, parentGameboard) {
-    super(id, parentGameboard);
+  constructor(id, parentGameboard, height, width) {
+    super(id, parentGameboard, height, width);
+    this.#id = id;
+    // this.#parentGameboard = parentGameboard;
+    // this.#height = height;
+    // this.#width = width;
     this.#path = false;
     this.#cheese = false;
   }
@@ -26,6 +32,10 @@ export default class MazeTile extends Tile {
   }
   set path(boolean) {
     this.#path = boolean;
+  }
+
+  grabTile() {
+    this.#tileDOM = document.querySelector(`[data-id="${this.#id}"]`);
   }
 
   reveal(arg) {
@@ -51,12 +61,14 @@ export default class MazeTile extends Tile {
         }
         break;
 
-      case "drill-head" || "drill-tail" || "mouse":
-        this.#tileDOM.className = `tile tile-path-${arg}`;
-        break;
-
       case "hidden-wall" || "hidden-path":
         this.#tileDOM.classList.add(arg);
+        break;
+
+      // dat default asi
+      default:
+        //   case "drill-head" || "drill-tail" || "mouse":
+        this.#tileDOM.className = `tile tile-path-${arg}`;
         break;
     }
   }
