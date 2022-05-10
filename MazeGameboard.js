@@ -1,7 +1,7 @@
 import Gameboard from "./Gameboard.js";
 import MazeTile from "./MazeTile.js";
 
-class MazeGameboard extends Gameboard {
+export default class MazeGameboard extends Gameboard {
   #name;
   #controlsPanel;
   #gameboardDOM;

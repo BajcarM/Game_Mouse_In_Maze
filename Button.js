@@ -18,8 +18,7 @@ export default class Button {
         button-${this.#label}">
             <div class="button-icon"></div>
             <div class="button-label">${this.#label}</div>
-        </div>
-    ;`;
+        </button>`;
   }
 
   grabButton() {

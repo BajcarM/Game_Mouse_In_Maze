@@ -54,6 +54,10 @@ export default class MazeTile extends Tile {
       case "drill-head" || "drill-tail" || "mouse":
         this.#tileDOM.className = `tile tile-path-${arg}`;
         break;
+
+      case "hidden-wall" || "hidden-path":
+        this.#tileDOM.classList.add(arg);
+        break;
     }
   }
 }

@@ -1,21 +1,24 @@
 import Button from "./Button.js";
-import MazeGameboard from "./MazeGameboard.js";
 
 export default class ControlsPanel {
   #gameSectionDOM;
-  #containerControlsDOM;
+
+  #gameControlsDOM;
   #containerGameboardDOM;
-  #gamesArray = [
+  #gamesAvailable = [
     //   { name: "mouse in maze", load: () => {} }
   ];
+
+  #gameSelected;
 
   #mainButtonsLabels = ["choose", "confirm"];
 
   #buttonsMain = [];
   #buttonsGame = [];
 
-  constructor(gameSectionDOM) {
+  constructor(gameSectionDOM, gamesAvailable) {
     this.#gameSectionDOM = gameSectionDOM;
+    this.#gamesAvailable = gamesAvailable;
 
     this.#mainButtonsLabels.forEach((label, index) => {
       this.#buttonsMain.push(new Button(index, label, "main", this));
@@ -23,12 +26,12 @@ export default class ControlsPanel {
 
     // add some choose field
 
-    this.#gameSectionDOM.innerHtml = `
+    this.#gameSectionDOM.innerHTML = `
         <div class="container-controls">
             <div class="controls-main">
                 ${this.#buttonsMain
                   .map((button) => {
-                    return button.buttonHTML();
+                    return button.buttonHTML;
                   })
                   .join("")}
             </div>
@@ -37,9 +40,20 @@ export default class ControlsPanel {
         </div>
         <div class="container-gameboard">
             <div class="gameboard"></div>
-        </div>
-        `;
+        </div>`;
 
-        
+    this.#buttonsMain.forEach((button) => {
+      button.grabButton();
+      button.listenForClick();
+    });
+
+    this.#containerGameboardDOM = document.querySelector(
+      ".container-gameboard"
+    );
+    this.#gameControlsDOM = document.querySelector(".controls-game");
+  }
+
+  buttonClicked(id) {
+    console.log("button clicked " + id);
   }
 }

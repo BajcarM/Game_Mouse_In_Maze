@@ -5,3 +5,37 @@ body {
   padding: 0px;
   box-sizing: border-box;
 }
+
+.section-game {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  /* place-items: center; */
+}
+
+.container-controls {
+  display: grid;
+  place-items: center;
+  grid-row: 1;
+  width: 100%;
+  height: 20vh;
+  margin-top: 0px;
+}
+
+.controls-main {
+  display: grid;
+  place-items: center;
+  grid-row: 1;
+}
+
+.controls-game {
+  display: grid;
+  place-items: center;
+  grid-row: 2;
+}
+
+.container-game {
+  display: grid;
+  place-items: center;
+  grid-row: 2;
+}
