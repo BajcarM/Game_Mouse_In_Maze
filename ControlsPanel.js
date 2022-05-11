@@ -1,4 +1,5 @@
 import Button from "./Button.js";
+import Menu from "./Menu.js";
 import Joystick from "./Joystick.js";
 
 export default class ControlsPanel {
@@ -13,40 +14,32 @@ export default class ControlsPanel {
 
   #gameSelected;
 
-  #mainButtonsLabels = ["select"];
-
-  #buttonsMain = [];
+  #mainMenu;
   #buttonsGame = [];
 
   constructor(gameSectionDOM, gamesAvailable) {
     this.#gameSectionDOM = gameSectionDOM;
     this.#gamesAvailable = gamesAvailable;
 
-    this.#mainButtonsLabels.forEach((label, index) => {
-      this.#buttonsMain.push(new Button(index, label, "main", this));
-    });
+    console.log(gamesAvailable.reduce((acc, game) => {
+        acc.push(game.label);
+        return acc;
+      }, []));
+
+    this.#mainMenu = new Menu(
+      gamesAvailable.reduce((acc, game) => {
+        acc.push(game.label);
+        return acc;
+      }, []),
+      this
+    );
 
     this.#joystick = new Joystick(120, this);
 
     this.#gameSectionDOM.innerHTML = `
         <div class="container-controls">
             <div class="controls-main">                
-                <select name="games" id="game-select">
-                    <option value="">--Choose a game--</option>                    
-                    ${this.#gamesAvailable
-                      .map((game, index) => {
-                        return `
-                            <option value="${index}">
-                            ${game.label}
-                            </option>`;
-                      })
-                      .join("")} 
-                </select>
-                ${this.#buttonsMain
-                  .map((button) => {
-                    return button.buttonHTML;
-                  })
-                  .join("")}
+                ${this.#mainMenu.menuHTML}
             </div>
             <div class="controls-game">
             </div>
@@ -56,14 +49,12 @@ export default class ControlsPanel {
             <div class="gameboard"></div>
         </div>`;
 
-    this.#buttonsMain.forEach((button) => {
-      button.grabButton();
-      button.listenForClick();
-    });
+    this.#mainMenu.grabMenu();
+    this.#mainMenu.addListeners();
 
     this.#joystick.grabJoystick();
     this.#joystick.listenForTouch();
-    this.#joystick.listenForClick()
+    this.#joystick.listenForClick();
 
     this.#containerGameboardDOM = document.querySelector(
       ".container-gameboard"
@@ -71,15 +62,8 @@ export default class ControlsPanel {
     this.#gameControlsDOM = document.querySelector(".controls-game");
   }
 
-  buttonClicked(id) {
-    switch (id) {
-      case 0:
-        const gameIndex = document.getElementById("game-select").value;
-        if (gameIndex) {
-          this.loadGame(this.#gamesAvailable[gameIndex]);
-        }
-        break;
-    }
+  menuSelected(id) {
+    this.loadGame(this.#gamesAvailable[id]);
   }
 
   loadGame(game) {

@@ -39,8 +39,14 @@ export default class Joystick {
     let joystickDir;
     let signalToGameboard;
 
+    const wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
+    this.#joystickDOM.style.top = `
+        ${wrapBounding.top + this.#height / 4}px`;
+    this.#joystickDOM.style.left = `
+        ${wrapBounding.left + this.#height / 4}px`;
+
     this.#joystickWrapDOM.addEventListener("touchstart", (e) => {
-    //   e.preventDefault();
+      //   e.preventDefault();
       this.#touching = true;
       signalToGameboard = setInterval(() => {
         console.log(joystickDir);
@@ -54,6 +60,12 @@ export default class Joystick {
       e.preventDefault();
       this.#touching = false;
       clearInterval(signalToGameboard);
+
+      const wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
+      this.#joystickDOM.style.top = `
+          ${wrapBounding.top + this.#height / 4}px`;
+      this.#joystickDOM.style.left = `
+          ${wrapBounding.left + this.#height / 4}px`;
     });
 
     this.#joystickWrapDOM.addEventListener("touchmove", (e) => {
@@ -103,71 +115,76 @@ export default class Joystick {
   }
 
   listenForClick() {
-    let joystickDir;
-    let signalToGameboard;
-    const wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
+    // let joystickDir;
+    // let signalToGameboard;
+    // const wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
 
-    this.#joystickWrapDOM.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      document.querySelector("body").style.cursor = "none";
+    // this.#joystickWrapDOM.addEventListener("mousedown", (e) => {
+    //   e.preventDefault();
+    //   document.querySelector("body").style.cursor = "none";
 
-      this.#touching = true;
-      signalToGameboard = setInterval(() => {
-        if (this.#targetGameboard) {
-          this.#targetGameboard.arrowKey(joystickDir);
-        }
-      }, 500);
-    });
+    //   this.#touching = true;
+    //   signalToGameboard = setInterval(() => {
+    //     if (this.#targetGameboard) {
+    //       this.#targetGameboard.arrowKey(joystickDir);
+    //     }
+    //   }, 500);
+    // });
 
-    window.addEventListener("mouseup", (e) => {
-      e.preventDefault();
-      this.#touching = false;
-      clearInterval(signalToGameboard);
-      document.querySelector("body").style.cursor = "initial";
-    });
+    // window.addEventListener("mouseup", (e) => {
+    //   e.preventDefault();
+    //   this.#touching = false;
+    //   clearInterval(signalToGameboard);
+    //   document.querySelector("body").style.cursor = "initial";
 
-    this.#joystickWrapDOM.addEventListener("mousemove", (e) => {
-      e.preventDefault();
+    //   this.#joystickDOM.style.top = `
+    //       ${wrapBounding.top + this.#height / 4}px`;
+    //   this.#joystickDOM.style.left = `
+    //       ${wrapBounding.left + this.#height / 4}px`;
+    // });
 
-      let x = e.offsetX;
-      let y = e.offsetY;
+    // this.#joystickWrapDOM.addEventListener("mousemove", (e) => {
+    //   e.preventDefault();
 
-      const diffX = wrapBounding.width / 2 - x;
-      const diffY = wrapBounding.height / 2 - y;
+    //   let x = e.offsetX;
+    //   let y = e.offsetY;
 
-      const followFinger = () => {
-        if (
-          diffX * diffX + diffY * diffY <
-          (wrapBounding.height / 2) * (wrapBounding.height / 2)
-        ) {
-          this.#joystickDOM.style.top = `
-          ${wrapBounding.top + y - this.#height / 4}px`;
-          this.#joystickDOM.style.left = `
-          ${wrapBounding.left + x - this.#height / 4}px`;
-        }
-      };
+    //   const diffX = wrapBounding.width / 2 - x;
+    //   const diffY = wrapBounding.height / 2 - y;
 
-      const computeDirection = () => {
-        if (diffY < -Math.abs(diffX)) {
-          joystickDir = "up";
-        }
-        if (diffY > Math.abs(diffX)) {
-          joystickDir = "down";
-        }
-        if (diffX < -Math.abs(diffY)) {
-          joystickDir = "left";
-        }
-        if (diffX > Math.abs(diffY)) {
-          joystickDir = "right";
-        }
-      };
+    //   const followFinger = () => {
+    //     if (
+    //       diffX * diffX + diffY * diffY <
+    //       (wrapBounding.height / 2) * (wrapBounding.height / 2)
+    //     ) {
+    //       this.#joystickDOM.style.top = `
+    //       ${wrapBounding.top + y - this.#height / 4}px`;
+    //       this.#joystickDOM.style.left = `
+    //       ${wrapBounding.left + x - this.#height / 4}px`;
+    //     }
+    //   };
 
-      if (!this.#touching) {
-        return;
-      }
+    //   const computeDirection = () => {
+    //     if (diffY < -Math.abs(diffX)) {
+    //       joystickDir = "up";
+    //     }
+    //     if (diffY > Math.abs(diffX)) {
+    //       joystickDir = "down";
+    //     }
+    //     if (diffX < -Math.abs(diffY)) {
+    //       joystickDir = "left";
+    //     }
+    //     if (diffX > Math.abs(diffY)) {
+    //       joystickDir = "right";
+    //     }
+    //   };
 
-      followFinger();
-      computeDirection();
-    });
+    //   if (!this.#touching) {
+    //     return;
+    //   }
+
+    //   followFinger();
+    //   computeDirection();
+    // });
   }
 }

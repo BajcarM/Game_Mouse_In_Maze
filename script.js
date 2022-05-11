@@ -10,6 +10,18 @@ const gamesAvailable = [
     name: "maze",
     label: "Mouse in maze",
     gameboard: MazeGameboard,
+  }, {
+    name: "maze",
+    label: "Mouse in maze",
+    gameboard: MazeGameboard,
+  }, {
+    name: "maze",
+    label: "Mouse in maze",
+    gameboard: MazeGameboard,
+  }, {
+    name: "maze",
+    label: "Mouse in maze",
+    gameboard: MazeGameboard,
   },
 ];
 
