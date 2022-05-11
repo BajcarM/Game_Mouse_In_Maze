@@ -19,7 +19,7 @@ export default class Menu {
                 ${this.#items
                   .map((item, index) => {
                     return `
-                        <li class="menu-item" data-menu-${index}>
+                        <li class="menu-item" data-menu="${index}">
                         ${item}
                         </li>`;
                   })
@@ -52,7 +52,6 @@ export default class Menu {
     this.#listDOM.addEventListener("touchstart", (e) => {
       e.preventDefault();
 
-      
       this.#listDOM.classList.toggle("menu-open");
       this.#selectedDOM.textContent = e.target.textContent;
       this.#targetControlsPanel.menuSelected(e.target.dataset.menu);

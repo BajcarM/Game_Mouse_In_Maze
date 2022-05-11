@@ -21,11 +21,6 @@ export default class ControlsPanel {
     this.#gameSectionDOM = gameSectionDOM;
     this.#gamesAvailable = gamesAvailable;
 
-    console.log(gamesAvailable.reduce((acc, game) => {
-        acc.push(game.label);
-        return acc;
-      }, []));
-
     this.#mainMenu = new Menu(
       gamesAvailable.reduce((acc, game) => {
         acc.push(game.label);
@@ -113,6 +108,7 @@ export default class ControlsPanel {
     };
 
     const loadButtons = () => {
+      this.#buttonsGame = [];
       this.#gameSelected.buttons.forEach((label, index) => {
         this.#buttonsGame.push(
           new Button(index, label, "game", this.#gameSelected)
@@ -133,6 +129,6 @@ export default class ControlsPanel {
 
     loadGameboard();
     loadButtons();
-    this.#joystick.targetGameboard = game;
+    this.#joystick.targetGameboard = this.#gameSelected;
   }
 }

@@ -47,13 +47,13 @@ export default class Joystick {
 
     this.#joystickWrapDOM.addEventListener("touchstart", (e) => {
       //   e.preventDefault();
+
       this.#touching = true;
       signalToGameboard = setInterval(() => {
-        console.log(joystickDir);
         if (this.#targetGameboard) {
           this.#targetGameboard.arrowKey(joystickDir);
         }
-      }, 500);
+      }, 200);
     });
 
     window.addEventListener("touchend", (e) => {
@@ -91,16 +91,16 @@ export default class Joystick {
 
       const computeDirection = () => {
         if (diffY < -Math.abs(diffX)) {
-          joystickDir = "up";
+          joystickDir = 0;
         }
         if (diffY > Math.abs(diffX)) {
-          joystickDir = "down";
+          joystickDir = 2;
         }
         if (diffX < -Math.abs(diffY)) {
-          joystickDir = "left";
+          joystickDir = 1;
         }
         if (diffX > Math.abs(diffY)) {
-          joystickDir = "right";
+          joystickDir = 3;
         }
       };
 
@@ -118,11 +118,9 @@ export default class Joystick {
     // let joystickDir;
     // let signalToGameboard;
     // const wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
-
     // this.#joystickWrapDOM.addEventListener("mousedown", (e) => {
     //   e.preventDefault();
     //   document.querySelector("body").style.cursor = "none";
-
     //   this.#touching = true;
     //   signalToGameboard = setInterval(() => {
     //     if (this.#targetGameboard) {
@@ -130,28 +128,22 @@ export default class Joystick {
     //     }
     //   }, 500);
     // });
-
     // window.addEventListener("mouseup", (e) => {
     //   e.preventDefault();
     //   this.#touching = false;
     //   clearInterval(signalToGameboard);
     //   document.querySelector("body").style.cursor = "initial";
-
     //   this.#joystickDOM.style.top = `
     //       ${wrapBounding.top + this.#height / 4}px`;
     //   this.#joystickDOM.style.left = `
     //       ${wrapBounding.left + this.#height / 4}px`;
     // });
-
     // this.#joystickWrapDOM.addEventListener("mousemove", (e) => {
     //   e.preventDefault();
-
     //   let x = e.offsetX;
     //   let y = e.offsetY;
-
     //   const diffX = wrapBounding.width / 2 - x;
     //   const diffY = wrapBounding.height / 2 - y;
-
     //   const followFinger = () => {
     //     if (
     //       diffX * diffX + diffY * diffY <
@@ -163,7 +155,6 @@ export default class Joystick {
     //       ${wrapBounding.left + x - this.#height / 4}px`;
     //     }
     //   };
-
     //   const computeDirection = () => {
     //     if (diffY < -Math.abs(diffX)) {
     //       joystickDir = "up";
@@ -178,11 +169,9 @@ export default class Joystick {
     //       joystickDir = "right";
     //     }
     //   };
-
     //   if (!this.#touching) {
     //     return;
     //   }
-
     //   followFinger();
     //   computeDirection();
     // });

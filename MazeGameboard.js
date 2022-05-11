@@ -11,7 +11,7 @@ export default class MazeGameboard extends Gameboard {
   #gameboardDOM;
 
   #gameboardWorking = false;
-  #mazeReady=true;
+  #mazeReady = true;
   #mouseId = null;
   #gameboardHidden = false;
   #mouseDown = false;
@@ -76,7 +76,7 @@ export default class MazeGameboard extends Gameboard {
 
   #resetGameboard() {
     this.#gameboardHidden = false;
-    this.#mazeReady=false;
+    this.#mazeReady = false;
     this.#tilesArray.forEach((tile) => {
       tile.path = false;
       tile.cheese = false;
@@ -86,7 +86,7 @@ export default class MazeGameboard extends Gameboard {
 
   #generateMaze(speed) {
     // send gameboard is working
-    this.#mazeReady=true
+    this.#mazeReady = true;
 
     this.#resetGameboard();
 
@@ -328,6 +328,25 @@ export default class MazeGameboard extends Gameboard {
     eventMouseUp();
     eventMouseOver();
     // eventMouseClick();
+  }
+
+  arrowKey(dir) {
+    if (!this.#mouseId) {
+      return;
+    }
+
+    const moveDirections = [
+      this.#mouseId - this.#colsCount,
+      this.#mouseId - 1,
+      this.#mouseId + this.#colsCount,
+      this.#mouseId + 1,
+    ];
+
+    if (this.#tilesArray[moveDirections[dir]].path) {
+      this.#mouseId = moveDirections[dir];
+      this.#tilesArray[this.#mouseId].reveal("mouse");
+      this.#revealPath(this.#mouseId);
+    }
   }
 
   #hideGameboard() {
