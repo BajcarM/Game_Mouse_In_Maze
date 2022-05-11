@@ -80,34 +80,45 @@ export default class ControlsPanel {
 
     // Media queries a zapsat velikost a orientaci
 
-    switch (game.name) {
-      case "maze":
-        height = 500;
-        width = 900;
-        rowsCount = 5;
-        colsCount = 9;
+    const mediaCheck = () => {
+      const queryMax500W = window.matchMedia("(max-width: 500px)");
+      const queryMax500H = window.matchMedia("(max-height: 500px)");
+      const queryMin500W = window.matchMedia("(min-width: 500px)");
+      const queryMin1000W = window.matchMedia("(min-width: 1000px)");
 
-        break;
+      switch (game.name) {
+        case "maze":
+          queryMax500W.matches || queryMax500H.matches
+            ? ((height = 330),
+              (width = 330),
+              (rowsCount = 11),
+              (colsCount = 11))
+            : ((height = 750),
+              (width = 1050),
+              (rowsCount = 15),
+              (colsCount = 21));
 
-      default:
-        break;
-    }
+          break;
+
+        default:
+          break;
+      }
+    };
+
+    mediaCheck();
 
     const loadGameboard = () => {
       this.#gameSelected = new game.gameboard(
         game.name,
         this,
-        
+
         width,
         rowsCount,
         colsCount
       );
 
-     
-
       this.#containerGameboardDOM.innerHTML = this.#gameSelected.gameboardHTML;
       this.#gameSelected.grabGameboard();
-      
     };
 
     const loadButtons = () => {
@@ -115,7 +126,6 @@ export default class ControlsPanel {
         this.#buttonsGame.push(
           new Button(index, label, "game", this.#gameSelected)
         );
-        
       });
 
       this.#gameControlsDOM.innerHTML = `
@@ -127,11 +137,7 @@ export default class ControlsPanel {
       this.#buttonsGame.forEach((button) => {
         button.grabButton();
         button.listenForClick();
-
-        
       });
-
-    
     };
 
     loadGameboard();

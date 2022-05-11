@@ -10,7 +10,7 @@ body {
   height: 100vh;
   width: 100vw;
   display: grid;
-  /* place-items: center; */
+  place-items: center;
 }
 
 .container-controls {
@@ -18,8 +18,8 @@ body {
   place-items: center;
   grid-row: 1;
   width: 100%;
-  height: 20vh;
-  margin-top: 0px;
+  height: 10vh;
+  /* margin-top: 0px; */
 }
 
 .controls-main {
@@ -33,56 +33,95 @@ body {
   display: grid;
   place-items: center;
   grid-row: 2;
-  grid-template-columns: repeat(5,1fr);
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .container-gameboard {
   display: grid;
   place-items: center;
   grid-row: 2;
+  background-color: rgb(150, 150, 150);
 }
 
-.gameboard{
-    display: grid;
-    place-items: center;
+.gameboard {
+  display: grid;
+  place-items: center;
 }
 
-.maze-gameboard{
-    grid-template-columns: repeat(9, 1fr);
+.maze-gameboard {
+  grid-template-columns: repeat(9, 1fr);
 }
 
-.tile{
-    height: 100px;
-    width: 100px;
-background-size: contain;
-background-position: center;
+.tile {
+  height: 100px;
+  width: 100px;
+  background-size: contain;
+  background-position: center;
 }
 
-.tile-path-true{
-/* background-image: url(./images/paving-white.png); */
-background-color: white;
+.tile-path-true {
+  /* background-image: url(./images/paving-white.png); */
+  background-color: white;
 }
 
-.tile-path-false{
-    background-image: url(./images/wall.png);
-    background-color: white;
+.tile-path-false {
+  background-image: url(./images/wall.png);
+  background-color: white;
 }
 
-.tile-path-drill-head{
-    background-image: none;
-    background-color: blueviolet;
+.tile-path-drill-head {
+  background-image: none;
+  background-color: blueviolet;
 }
 
-.tile-path-drill-tail{
-    background-image: none;
-    background-color: rgb(101, 176, 246);
+.tile-path-drill-tail {
+  background-image: none;
+  background-color: rgb(101, 176, 246);
 }
 
-.tile-path-cheese{
+.tile-path-cheese {
+  /* background-color: yellow; */
+  background-image: url(./images/cheese.png);
+}
+
+.tile-path-mouse {
+  background-image: url(./images/jerry-face.jpg);
+  opacity: 100%;
+}
+
+.tile-path-hidden-wall {
+  background-color: rgb(60, 60, 60);
+  /* opacity: 30%; */
+  background-image: url(./images/wall-white.png);
+}
+
+.tile-path-hidden-path {
+  background-color: rgb(87, 87, 87);
+  /* opacity: 30%; */
+  background-image: url(./images/paving-white.png);
+}
+
+.maze-modal {
     
+  position: fixed;
+  /* display: none; */
+  top: 20vh;
+  height: 70vh;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  background-color: #fff;
 }
 
-.tile-path-mouse{
-   background-color: grey; 
-   opacity: 100%;
+.maze-modal .modal-image {
+  background-image: url(./images/Jerry-cheese.png);
+  background-position: center;
+  background-size: cover;
+  height: 70%;
+  
+}
+
+.maze-modal .modal-message {
+  font-size: 2rem;
+  font-weight: bold;
 }

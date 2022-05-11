@@ -11,6 +11,8 @@ export default class MazeGameboard extends Gameboard {
   #gameboardDOM;
 
   #gameboardWorking = false;
+  #mouseId = null;
+  #gameboardHidden = false;
   #mouseDown = false;
 
   #gameButtons = ["play", "drill", "mouse", "cheese", "reset"];
@@ -46,12 +48,18 @@ export default class MazeGameboard extends Gameboard {
 
   get gameboardHTML() {
     return `
-      <div class="gameboard ${this.#name}-gameboard">
+      <div class="gameboard ${this.#name}-gameboard" 
+      style="grid-template-columns: 
+      repeat(${this.#colsCount}, 1fr);">
         ${this.#tilesArray
           .map((tile) => {
             return tile.tileHTML;
           })
           .join("")}
+      </div>
+      <div class="${this.#name}-modal">
+          <div class="modal-image"></div>
+          <div class="modal-message">YOU FOUND CHEESE!!</div>
       </div>
       `;
   }
@@ -62,16 +70,22 @@ export default class MazeGameboard extends Gameboard {
       tile.grabTile();
     });
 
-    this.#generateMaze(1);
+    this.#generateMaze(this.#colsCount > 15 ? 0.3 : 1);
+  }
+
+  #resetGameboard() {
+    this.#gameboardHidden = false;
+    this.#tilesArray.forEach((tile) => {
+      tile.path = false;
+      tile.cheese = false;
+      tile.reveal("full");
+    });
   }
 
   #generateMaze(speed) {
     // send gameboard is working
 
-    this.#tilesArray.forEach((tile) => {
-      tile.path = false;
-      tile.reveal("full");
-    });
+    this.#resetGameboard();
 
     let remainingTiles = [];
 
@@ -85,7 +99,7 @@ export default class MazeGameboard extends Gameboard {
 
     const stackTiles = [remainingTiles.shift()];
 
-    const drill = setInterval(() => {
+    const drill = () => {
       const currentTile = stackTiles.pop();
 
       this.#tilesArray[currentTile].path = true;
@@ -136,12 +150,22 @@ export default class MazeGameboard extends Gameboard {
 
       possibleMoves.length > 0 ? drillNext() : drillBack();
 
-      if (stackTiles.length === 0) {
-        clearInterval(drill);
+      // Send message gameboard not working
+    };
 
-        // Send message gameboard not working
-      }
-    }, speed * 100);
+    if (speed > 0) {
+      const drillInterval = setInterval(() => {
+        drill();
+        if (stackTiles.length === 0) {
+          clearInterval(drillInterval);
+        }
+      }, speed * 100);
+      return;
+    }
+
+    while (stackTiles.length > 0) {
+      drill();
+    }
   }
 
   #revealPath(id) {
@@ -151,7 +175,7 @@ export default class MazeGameboard extends Gameboard {
       moveDirections.forEach((dir) => {
         this.#tilesArray[id + dir].reveal("full");
 
-        if (this.#tilesArray[id + dir].path) {
+        if (this.#gameboardHidden && this.#tilesArray[id + dir].path) {
           this.#tilesArray[id + 2 * dir].reveal("part");
         }
 
@@ -179,40 +203,51 @@ export default class MazeGameboard extends Gameboard {
     };
 
     revealStraight();
-    revealDiagonal();
+    if (this.#gameboardHidden) {
+      revealDiagonal();
+    }
   }
 
-  #placeCheeses(num) {
+  #placeCheese(speed) {
+    this.#tilesArray.forEach((tile) => {
+      tile.cheese = false;
+    });
+
+    const num = this.#colsCount > 15 ? 3 : 1;
     let i = 0;
-    const placeCheese = setInterval(() => {
-      const emptyPathsIds = this.#tilesArray.filter((tile) => {
-        if (tile.path && !tile.cheese()) {
-          return tile.id();
+
+    const randomCheese = () => {
+      const randomId = Math.floor(Math.random() * this.#tilesArray.length);
+
+      this.#tilesArray[randomId].path && !this.#tilesArray[randomId].cheese
+        ? ((this.#tilesArray[randomId].cheese = true), i++)
+        : randomCheese();
+    };
+
+    if (speed > 0) {
+      const placeCheeseInterval = setInterval(() => {
+        randomCheese();
+
+        if (i === num) {
+          clearInterval(placeCheeseInterval);
+
+          // send gameboard not working
         }
-      });
+      }, speed * 500);
+      return;
+    }
 
-      const randomId = Math.floor(Math.random() * emptyPathsIds.length);
-
-      this.#tilesArray[randomId].cheese(true);
-
-      //   Control panel cheese remaining Count
-      //    + animation...
-
-      i++;
-
-      if (i === num) {
-        clearInterval(placeCheese);
-
-        // send gameboard not working
-      }
-    }, 500);
+    while (i < num) {
+      randomCheese();
+    }
   }
 
   #mouse() {
-    let mouseTileId = this.#colsCount + 1;
+    this.#mouseId = this.#colsCount + 1;
+    let mouseTileId = this.#mouseId;
 
-    this.#tilesArray[mouseTileId].reveal("mouse");
-    this.#revealPath(mouseTileId);
+    this.#tilesArray[this.#mouseId].reveal("mouse");
+    this.#revealPath(this.#mouseId);
 
     const eventMouseDown = () => {
       this.#gameboardDOM.addEventListener("mousedown", (e) => {
@@ -239,10 +274,10 @@ export default class MazeGameboard extends Gameboard {
         e.preventDefault();
 
         const possibleMoves = [
-          mouseTileId + 1,
-          mouseTileId - 1,
-          mouseTileId + this.#colsCount,
-          mouseTileId - this.#colsCount,
+          this.#mouseId + 1,
+          this.#mouseId - 1,
+          this.#mouseId + this.#colsCount,
+          this.#mouseId - this.#colsCount,
         ];
 
         if (
@@ -250,50 +285,83 @@ export default class MazeGameboard extends Gameboard {
           this.#tilesArray[e.target.dataset.id].path &&
           possibleMoves.includes(parseInt(e.target.dataset.id))
         ) {
-          mouseTileId = parseInt(e.target.dataset.id);
-          this.#tilesArray[mouseTileId].reveal("mouse");
-          this.#revealPath(mouseTileId);
+          this.#mouseId = parseInt(e.target.dataset.id);
+          this.#tilesArray[this.#mouseId].reveal("mouse");
+          this.#revealPath(this.#mouseId);
         }
       });
     };
 
-    const eventMouseClick = () => {
-      this.#gameboardDOM.addEventListener("click", (e) => {
-        e.preventDefault();
-        
+    // const eventMouseClick = () => {
+    //   this.#gameboardDOM.addEventListener("click", (e) => {
+    //     e.preventDefault();
 
-        const possibleMoves = [
-          mouseTileId + 1,
-          mouseTileId - 1,
-          mouseTileId + this.#colsCount,
-          mouseTileId - this.#colsCount,
-        ];
+    //     const possibleMoves = [
+    //       mouseTileId + 1,
+    //       mouseTileId - 1,
+    //       mouseTileId + this.#colsCount,
+    //       mouseTileId - this.#colsCount,
+    //     ];
 
-        if (
-          this.#tilesArray[e.target.dataset.id].path &&
-          possibleMoves.includes(parseInt(e.target.dataset.id))
-        ) {
-          mouseTileId = parseInt(e.target.dataset.id);
-          this.#tilesArray[mouseTileId].reveal("mouse");
-          this.#revealPath(mouseTileId);
-        }
-      });
-    };
+    //     if (
+    //     //   this.#tilesArray[e.target.dataset.id].path &&
+    //       possibleMoves.includes(parseInt(e.target.dataset.id))
+    //     ) {
+    //       mouseTileId = parseInt(e.target.dataset.id);
+    //       this.#tilesArray[mouseTileId].reveal("mouse");
+    //       this.#revealPath(mouseTileId);
+    //     }
+    //   });
+    // };
 
     eventMouseDown();
     eventMouseUp();
     eventMouseOver();
-    eventMouseClick();
+    // eventMouseClick();
+  }
+
+  #hideGameboard() {
+    this.#gameboardHidden = true;
+    let hiddenPath = [];
+
+    for (let row = 1; row < this.#rowsCount; row += 2) {
+      for (let col = 1; col < this.#colsCount; col += 2) {
+        const id = row * this.#colsCount + col;
+
+        hiddenPath.push(id);
+      }
+    }
+    this.#tilesArray.forEach((tile) => {
+      tile.reveal("hidden-wall");
+    });
+    hiddenPath.forEach((id) => {
+      this.#tilesArray[id].reveal("hidden-path");
+    });
   }
 
   buttonClicked(id) {
     switch (id) {
-      case 1:
-        this.#generateMaze(1);
-        break;
-      case 2:
+      case 0:
+        this.#generateMaze(0);
+        this.#placeCheese(0);
+        this.#hideGameboard();
         this.#mouse();
 
+        break;
+      case 1:
+        this.#generateMaze(this.#colsCount > 15 ? 0.3 : 1);
+        break;
+      case 2:
+        this.#mouseId
+          ? (this.#tilesArray[this.#mouseId].reveal("full"),
+            (this.#mouseId = null))
+          : this.#mouse();
+        break;
+      case 3:
+        this.#placeCheese(1);
+        break;
+      case 4:
+        this.#resetGameboard();
         break;
     }
   }

@@ -25,6 +25,14 @@ export default class MazeTile extends Tile {
   }
   set cheese(boolean) {
     this.#cheese = boolean;
+
+    if (boolean) {
+      this.#tileDOM.className = `tile tile-path-cheese`;
+      return;
+    }
+    if (this.#path) {
+      this.#tileDOM.className = `tile tile-path-true`;
+    }
   }
 
   get path() {
@@ -53,7 +61,7 @@ export default class MazeTile extends Tile {
         break;
 
       case "part":
-        this.#tileDOM.style.opacity = "50%";
+        this.#tileDOM.style.opacity = "70%";
         this.#tileDOM.className = `tile tile-path-${this.#path}`;
 
         if (this.#cheese) {
@@ -62,7 +70,9 @@ export default class MazeTile extends Tile {
         break;
 
       case "hidden-wall" || "hidden-path":
-        this.#tileDOM.classList.add(arg);
+        // this.#tileDOM.classList.add(arg);
+        this.#tileDOM.className = `tile tile-path-${arg}`;
+        // this.#tileDOM.style.opacity = "30%";
         break;
 
       // dat default asi

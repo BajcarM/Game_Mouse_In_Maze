@@ -17,7 +17,9 @@ export default class Tile {
   }
 
   get tileHTML() {
-    return `<div class="tile" data-id="${this.#id}"></div>`;
+    return `<div class="tile" data-id="${this.#id}" 
+            style="height: ${this.#height}px; width: ${this.#width}px">
+            </div>`;
   }
 
   set height(height) {
