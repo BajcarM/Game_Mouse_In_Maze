@@ -1,9 +1,11 @@
 import Button from "./Button.js";
+import Joystick from "./Joystick.js";
 
 export default class ControlsPanel {
   #gameSectionDOM;
 
   #gameControlsDOM;
+  #joystick;
   #containerGameboardDOM;
   #gamesAvailable = [
     //   { name: "mouse in maze", load: () => {} }
@@ -24,7 +26,7 @@ export default class ControlsPanel {
       this.#buttonsMain.push(new Button(index, label, "main", this));
     });
 
-    // add some choose field
+    this.#joystick = new Joystick(120, this);
 
     this.#gameSectionDOM.innerHTML = `
         <div class="container-controls">
@@ -49,6 +51,7 @@ export default class ControlsPanel {
             <div class="controls-game">
             </div>
         </div>
+        ${this.#joystick.joystickHTML}
         <div class="container-gameboard">
             <div class="gameboard"></div>
         </div>`;
@@ -57,6 +60,10 @@ export default class ControlsPanel {
       button.grabButton();
       button.listenForClick();
     });
+
+    this.#joystick.grabJoystick();
+    this.#joystick.listenForTouch();
+    this.#joystick.listenForClick()
 
     this.#containerGameboardDOM = document.querySelector(
       ".container-gameboard"
@@ -142,5 +149,6 @@ export default class ControlsPanel {
 
     loadGameboard();
     loadButtons();
+    this.#joystick.targetGameboard = game;
   }
 }

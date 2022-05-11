@@ -11,6 +11,7 @@ export default class MazeGameboard extends Gameboard {
   #gameboardDOM;
 
   #gameboardWorking = false;
+  #mazeReady=true;
   #mouseId = null;
   #gameboardHidden = false;
   #mouseDown = false;
@@ -75,6 +76,7 @@ export default class MazeGameboard extends Gameboard {
 
   #resetGameboard() {
     this.#gameboardHidden = false;
+    this.#mazeReady=false;
     this.#tilesArray.forEach((tile) => {
       tile.path = false;
       tile.cheese = false;
@@ -84,6 +86,7 @@ export default class MazeGameboard extends Gameboard {
 
   #generateMaze(speed) {
     // send gameboard is working
+    this.#mazeReady=true
 
     this.#resetGameboard();
 
