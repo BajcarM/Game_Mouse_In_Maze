@@ -67,22 +67,25 @@ export default class ControlsPanel {
     // Media queries a zapsat velikost a orientaci
 
     const mediaCheck = () => {
-      const queryMax500W = window.matchMedia("(max-width: 500px)");
-      const queryMax500H = window.matchMedia("(max-height: 500px)");
-      const queryMin500W = window.matchMedia("(min-width: 500px)");
-      const queryMin1000W = window.matchMedia("(min-width: 1000px)");
+      const queryMax600W = window.matchMedia("(max-width: 600px)");
+      const queryMax600H = window.matchMedia("(max-height: 600px)");
+      const queryMin600W = window.matchMedia("(min-width: 600px)");
+      const queryMax1300W = window.matchMedia("(max-width: 1300px)");
+      const queryMin1300W = window.matchMedia("(min-width: 1300px)");
 
       switch (game.name) {
         case "maze":
-          queryMax500W.matches || queryMax500H.matches
-            ? ((height = 330),
-              (width = 330),
-              (rowsCount = 11),
-              (colsCount = 11))
-            : ((height = 750),
-              (width = 1050),
-              (rowsCount = 15),
-              (colsCount = 21));
+          if (queryMax600W.matches || queryMax600H.matches) {
+            (height = 330), (width = 330), (rowsCount = 11), (colsCount = 11);
+            break;
+          }
+          if (queryMax1300W.matches) {
+            (height = 680), (width = 680), (rowsCount = 17), (colsCount = 17);
+          }
+
+          if (queryMin1300W.matches) {
+            (height = 750), (width = 1050), (rowsCount = 15), (colsCount = 21);
+          }
 
           break;
 

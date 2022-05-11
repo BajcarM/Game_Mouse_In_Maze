@@ -53,7 +53,7 @@ export default class Joystick {
         if (this.#targetGameboard) {
           this.#targetGameboard.arrowKey(joystickDir);
         }
-      }, 200);
+      }, 100);
     });
 
     window.addEventListener("touchend", (e) => {
@@ -117,7 +117,8 @@ export default class Joystick {
   listenForClick() {
     // let joystickDir;
     // let signalToGameboard;
-    // const wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
+    // let wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
+
     // this.#joystickWrapDOM.addEventListener("mousedown", (e) => {
     //   e.preventDefault();
     //   document.querySelector("body").style.cursor = "none";
@@ -126,8 +127,9 @@ export default class Joystick {
     //     if (this.#targetGameboard) {
     //       this.#targetGameboard.arrowKey(joystickDir);
     //     }
-    //   }, 500);
+    //   }, 100);
     // });
+
     // window.addEventListener("mouseup", (e) => {
     //   e.preventDefault();
     //   this.#touching = false;
@@ -138,8 +140,10 @@ export default class Joystick {
     //   this.#joystickDOM.style.left = `
     //       ${wrapBounding.left + this.#height / 4}px`;
     // });
+
     // this.#joystickWrapDOM.addEventListener("mousemove", (e) => {
     //   e.preventDefault();
+    //   wrapBounding = this.#joystickWrapDOM.getBoundingClientRect();
     //   let x = e.offsetX;
     //   let y = e.offsetY;
     //   const diffX = wrapBounding.width / 2 - x;
@@ -157,16 +161,16 @@ export default class Joystick {
     //   };
     //   const computeDirection = () => {
     //     if (diffY < -Math.abs(diffX)) {
-    //       joystickDir = "up";
+    //       joystickDir = 2;
     //     }
     //     if (diffY > Math.abs(diffX)) {
-    //       joystickDir = "down";
+    //       joystickDir = 0;
     //     }
     //     if (diffX < -Math.abs(diffY)) {
-    //       joystickDir = "left";
+    //       joystickDir = 3;
     //     }
     //     if (diffX > Math.abs(diffY)) {
-    //       joystickDir = "right";
+    //       joystickDir = 1;
     //     }
     //   };
     //   if (!this.#touching) {

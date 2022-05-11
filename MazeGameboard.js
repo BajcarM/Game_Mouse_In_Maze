@@ -209,7 +209,7 @@ export default class MazeGameboard extends Gameboard {
       document.querySelector(`.${this.#name}-modal`).style.display = "grid";
       setTimeout(() => {
         document.querySelector(`.${this.#name}-modal`).style.display = "none";
-      }, 1000);
+      }, 2000);
     };
 
     revealStraight();
@@ -381,13 +381,19 @@ export default class MazeGameboard extends Gameboard {
         this.#generateMaze(this.#colsCount > 15 ? 0.3 : 1);
         break;
       case 2:
+        if (this.#gameboardHidden || !this.#mazeReady) {
+            break;
+          }
         this.#mouseId
           ? (this.#tilesArray[this.#mouseId].reveal("full"),
             (this.#mouseId = null))
           : this.#mouse();
         break;
       case 3:
-        this.#placeCheese(1);
+        if (this.#gameboardHidden || !this.#mazeReady) {
+          break;
+        }
+        this.#placeCheese(0.2);
         break;
       case 4:
         this.#resetGameboard();

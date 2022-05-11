@@ -32,7 +32,6 @@ export default class Button {
 
     this.#buttonDOM.addEventListener("touchstart", () => {
         this.#buttonTarget.buttonClicked(this.#id);
-        console.log('click');
       });
   
       
