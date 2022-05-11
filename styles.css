@@ -104,20 +104,28 @@ body {
 .maze-modal {
     
   position: fixed;
-  /* display: none; */
+ 
   top: 20vh;
   height: 70vh;
   width: 100vw;
-  display: grid;
+  display: none;
   place-items: center;
   background-color: #fff;
+  opacity: 95%;
+
+  
 }
 
 .maze-modal .modal-image {
+  grid-row: 1;
   background-image: url(./images/Jerry-cheese.png);
   background-position: center;
-  background-size: cover;
-  height: 70%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 40vh;
+  width: 40vw;
+  
+
   
 }
 

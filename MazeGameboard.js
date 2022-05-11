@@ -173,18 +173,18 @@ export default class MazeGameboard extends Gameboard {
       const moveDirections = [+1, -1, +this.#colsCount, -this.#colsCount];
 
       moveDirections.forEach((dir) => {
-        this.#tilesArray[id + dir].reveal("full");
-
-        if (this.#gameboardHidden && this.#tilesArray[id + dir].path) {
-          this.#tilesArray[id + 2 * dir].reveal("part");
-        }
-
         if (this.#tilesArray[id + dir].cheese) {
-          console.log("you found cheese");
+          youFoundCheese();
 
           //   here goes win process
 
           // this.#tilesArray[id + dir].cheese(false)
+        }
+
+        this.#tilesArray[id + dir].reveal("full");
+
+        if (this.#gameboardHidden && this.#tilesArray[id + dir].path) {
+          this.#tilesArray[id + 2 * dir].reveal("part");
         }
       });
     };
@@ -200,6 +200,13 @@ export default class MazeGameboard extends Gameboard {
       diagonalDirections.forEach((dir) => {
         this.#tilesArray[id + dir].reveal("part");
       });
+    };
+
+    const youFoundCheese = () => {
+      document.querySelector(`.${this.#name}-modal`).style.display = "grid";
+      setTimeout(() => {
+        document.querySelector(`.${this.#name}-modal`).style.display = "none";
+      }, 1000);
     };
 
     revealStraight();
