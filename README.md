@@ -10,4 +10,7 @@ Maze will resize in respond to screensize. Number of cheeses will adjust too. (1
 
 I used the maze algoritm from my previous project Maze_Generator.
 
+Try it!!!
+https://bajcarm.github.io/Game_Mouse_In_Maze/
+
 ![image](https://user-images.githubusercontent.com/102542768/168007567-7fe4fa02-d54c-4c16-93be-3d43f082d6b6.png)
