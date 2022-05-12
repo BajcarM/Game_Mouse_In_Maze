@@ -39,11 +39,12 @@ body {
   height: 2rem;
   display: grid;
   place-items: center;
+  padding: 0px 10px;
 }
 
 .menu-selected:hover {
   height: 110%;
-  box-shadow: 5px 5px 5px grey;
+  box-shadow: 2px 2px 2px grey;
 }
 
 .menu-list {

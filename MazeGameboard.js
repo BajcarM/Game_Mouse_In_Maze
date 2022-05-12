@@ -86,10 +86,12 @@ export default class MazeGameboard extends Gameboard {
 
   #generateMaze(speed) {
     // send gameboard is working
-    this.#mazeReady = true;
+    
 
     this.#resetGameboard();
 
+    this.#mazeReady = true;
+    
     let remainingTiles = [];
 
     for (let row = 1; row < this.#rowsCount; row += 2) {
