@@ -14,3 +14,6 @@ Try it!!!
 https://bajcarm.github.io/Game_Mouse_In_Maze/
 
 ![image](https://user-images.githubusercontent.com/102542768/168007567-7fe4fa02-d54c-4c16-93be-3d43f082d6b6.png)
+
+![image](https://user-images.githubusercontent.com/102542768/168490627-2a30ccb9-4fa1-4421-ad35-c026e8a46f25.png)
+
