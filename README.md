@@ -1,8 +1,7 @@
 # Game_Mouse_In_Maze
-Joystick for touchscreen. And I made it modular so in future more games can be easily added. 
+Joystick for touchscreen.
 
-
-Modular platform so more games can be easily added.
+Modular platform so more games can be easily added. Now there is only this game in the menu. Just four times - as a placeholder.
 
 Control mouse by click and drag or with joystick for touchscreens.
 
